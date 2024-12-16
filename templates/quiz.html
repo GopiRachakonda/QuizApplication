@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <script>
+        var timer = {{ timer }};
+        var timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                timer--;
+                document.getElementById('timer').innerHTML = "Time remaining: " + timer + " seconds";
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('quizForm').submit();
+                }
+            }, 1000);
+        }
+        window.onload = startTimer;
+    </script>
+</head>
+<body>
+    <h1>Quiz</h1>
+    <p id="timer">Time remaining: {{ timer }} seconds</p>
+    <form id="quizForm" method="POST" action="{{ url_for('submit') }}">
+        {% for question in questions %}
+            <fieldset>
+                <legend>{{ question['question'] }}</legend>
+                {% for option in question['options'] %}
+                    <label>
+                        <input type="radio" name="{{ question['_id'] }}" value="{{ option }}">
+                        {{ option }}
+                    </label><br>
+                {% endfor %}
+            </fieldset>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
